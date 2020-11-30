@@ -67,4 +67,44 @@ public class Map {
     public void setTotal(String total) {
         this.total = total;
     }
+
+    public List<Enemy> getEnemiesByMap() {
+        return enemiesByMap;
+    }
+
+    public void setEnemiesByMap(List<Enemy> enemiesByMap) {
+        this.enemiesByMap = enemiesByMap;
+    }
+
+    public List<Ally> getAlliesByMap() {
+        return alliesByMap;
+    }
+
+    public void setAlliesByMap(List<Ally> alliesByMap) {
+        this.alliesByMap = alliesByMap;
+    }
+
+    public List<Item> getItemsByMap() {
+        return itemsByMap;
+    }
+
+    public void setItemsByMap(List<Item> itemsByMap) {
+        this.itemsByMap = itemsByMap;
+    }
+
+    //función añadir enemigo
+    public void addEnemy(Enemy enemy){
+        this.enemiesByMap.add(enemy);
+    }
+
+    //función añadir aliado
+    public void addAlly(Ally ally){
+        this.alliesByMap.add(ally);
+    }
+
+    //función añadir items al mapa
+    public void addItem(Item item){
+        this.itemsByMap.add(item);
+    }
+
 }

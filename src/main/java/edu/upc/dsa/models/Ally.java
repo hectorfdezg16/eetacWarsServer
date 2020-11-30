@@ -11,16 +11,19 @@ public class Ally {
     String life;
     String attack;
     String level;
+    //atributos aliados pertenecen a un mapa
+    String idMap;
 
     //constructor vacio
     public Ally() {
     }
 
     //constructor vacio
-    public Ally(String id, String name, String total) {
+    public Ally(String id, String name, String total, String idMap) {
         this.id = id;
         this.name = name;
         this.total = total;
+        this.idMap = idMap;
     }
 
     public String getId() {
@@ -77,5 +80,13 @@ public class Ally {
 
     public void setLevel(String level) {
         this.level = level;
+    }
+
+    public String getIdMap() {
+        return idMap;
+    }
+
+    public void setIdMap(String idMap) {
+        this.idMap = idMap;
     }
 }

@@ -10,16 +10,19 @@ public class Enemy {
     String life;
     String attack;
     String level;
+    //atributo del id del mapa al que pertenecen
+    String idMap;
 
     //constructor vacio, con parametros, getters y setters
     public Enemy() {
     }
 
     //constructor basico
-    public Enemy(String id, String name, String total) {
+    public Enemy(String id, String name, String total, String idMap) {
         this.id = id;
         this.name = name;
         this.total = total;
+        this.idMap = idMap;
     }
 
     //getters y setters
@@ -77,5 +80,13 @@ public class Enemy {
 
     public void setLevel(String level) {
         this.level = level;
+    }
+
+    public String getIdMap() {
+        return idMap;
+    }
+
+    public void setIdMap(String idMap) {
+        this.idMap = idMap;
     }
 }
