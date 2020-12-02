@@ -18,6 +18,11 @@ public class Item {
     public Item() {
     }
 
+    public Item(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     //constructor basico
     //de momento tenemos dudas de poner en el basico nivel o no
     //lo veremos más adelante

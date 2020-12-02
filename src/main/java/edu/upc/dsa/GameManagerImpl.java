@@ -23,6 +23,7 @@ public class GameManagerImpl implements GameManager {
     //listas de usuario
     private ArrayList<Play> playsByPlayer;
     private ArrayList<Item> itemsByPlayer;
+    public ArrayList<Item> items;
     //agregamos números de los partidas iniciales e items iniciales
     //y los inicializamos en el constructor
     private int numPlays, numItems, numUsers, numMaps;
@@ -48,6 +49,7 @@ public class GameManagerImpl implements GameManager {
         mapsByPlay = new LinkedList<>();
         enemiesByMap = new LinkedList<>();
         alliesByMap = new LinkedList<>();
+        items=new ArrayList<>();
         users = new HashMap<>();
 
     }
@@ -68,6 +70,7 @@ public class GameManagerImpl implements GameManager {
         mapsByPlay.clear();
         enemiesByMap.clear();
         alliesByMap.clear();
+        items.clear();
         users.clear();
     }
 
@@ -143,23 +146,9 @@ public class GameManagerImpl implements GameManager {
     }
 
     @Override
-    public void addPlay(String id, String positionX, String positionY) throws UserNotFoundException {
-
-    }
-
-    @Override
-    public void addItem(String id, String name, String total, String idPlayer) throws UserNotFoundException {
-        //User = Player
-        /*User user = null;
-        Item item;
-        for(int i = 0; i<this.numUsers; i++){
-            if(idPlayer.equals(this.arra))
-        }*/
-    }
-
-    @Override
-    public void addMap(String id, String level, String total) {
-
+    public int numItems() {
+        logger.info("Numero de items en el sistema: " +this.items.size());
+        return this.items.size();
     }
 
     @Override
@@ -230,9 +219,35 @@ public class GameManagerImpl implements GameManager {
 
     //a continuación a implementar todas las funciones creadas
     @Override
-    public User getUser(String id) throws UserNotFoundException {
+    public User getUser(String id) throws UserNotFoundException{
         User user = this.users.get(id);
         return user;
+    }
+
+    @Override
+    public Item getItem(String id) throws ItemNotFoundException{
+        logger.info("getItem("+id+")");
+
+        for(Item item: this.items){
+            if(item.getId().equals(id)){
+                logger.info("getTrack("+id+"): " +item);
+                return item;
+            }
+        }
+        logger.warn("not found"+id);
+        return null;
+    }
+
+    //devuélveme todos los usuarios
+    @Override
+    public HashMap<String, User> findAll() {
+        return this.users;
+    }
+
+    //devélveme todos los items
+    @Override
+    public ArrayList<Item> findAllItems() {
+        return this.items;
     }
 
     //este eliminar usuario solo lo puede hacer el propio usuario o un administrador
@@ -249,11 +264,81 @@ public class GameManagerImpl implements GameManager {
         }
     }
 
+    @Override
+    public void deleteUserAdmin(String id) throws UserNotFoundException{
+            User user = this.getUser(id);
+            if(user==null){
+                logger.warn("not found" +user);
+            }
+            else logger.info(user+"deleted");
+
+            this.users.remove(user.getId());
+    }
+
+    //eliminar item
+    @Override
+    public void deleteItem(String id) throws ItemNotFoundException{
+        Item item = this.getItem(id);
+        if(item==null){
+            logger.warn("not found" +item);
+        }
+        else logger.info(item+"deleted");
+
+        this.items.remove(item);
+    }
+
     //falta implementar adduser/ de momento no lo veo
     @Override
-    public User updateUser() throws UserNotFoundException {
-        return null;
+    public User updateUser(User u) throws UserNotFoundException {
+        User user = this.getUser(u.getId());
+
+        if(user!=null){
+            logger.info(u+" recibido");
+
+            user.setId(u.getId());
+            user.setUsername(u.getUsername());
+            user.setPassword(u.getPassword());
+
+            logger.info(user+" actualizado");
+        }
+        else {
+            logger.warn("Usuario no encontrado");
+            //throw new UserNotFoundException();
+        }
+        return user;
     }
+
+    //actualizar objeto
+    @Override
+    public Item updateItem(Item i) throws ItemNotFoundException {
+        Item item = this.getItem(i.getId());
+
+        if(item!=null){
+            logger.info(i+" recibido");
+
+            item.setId(i.getId());
+            item.setName(i.getName());
+
+            logger.info(item+" actualizado");
+        }
+        else {
+            logger.warn("Objeto no encontrado");
+            //throw new ItemNotFoundException();
+        }
+        return item;
+    }
+
+    public Item addItem(Item item){
+        this.items.add(item);
+        return item;
+    }
+
+    //añadir item al juego
+    public Item addItem(String id, String name){
+        return this.addItem(new Item(id, name));
+    }
+
+
 
 
 }

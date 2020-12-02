@@ -35,6 +35,11 @@ public class User {
     public User(String id) {
     }
 
+    //constructor vacio error para el 415
+    //preguntarle porque aun no se porque motivo???
+    public User() {
+    }
+
     //constructor a parte para añadir usuarios con lo básico
     public User(String id, String username, String password) {
         this.id = id;
@@ -118,18 +123,13 @@ public class User {
     }
 
     //a continuación pondremos el tostring por si hace falta mostrarlo por consola
+
     @Override
     public String toString() {
         return "User{" +
                 "id='" + id + '\'' +
                 ", username='" + username + '\'' +
-                ", mail='" + mail + '\'' +
-                ", name='" + name + '\'' +
-                ", lastname='" + lastname + '\'' +
-                ", city='" + city + '\'' +
                 ", password='" + password + '\'' +
-                ", life='" + life + '\'' +
-                ", level='" + level + '\'' +
                 '}';
     }
 }
