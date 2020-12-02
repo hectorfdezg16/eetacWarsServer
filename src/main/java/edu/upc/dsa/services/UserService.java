@@ -2,6 +2,7 @@ package edu.upc.dsa.services;
 
 import edu.upc.dsa.GameManager;
 import edu.upc.dsa.GameManagerImpl;
+import edu.upc.dsa.models.ExistantUserException;
 import edu.upc.dsa.models.User;
 import edu.upc.dsa.models.UserNotFoundException;
 import io.swagger.annotations.Api;
@@ -15,22 +16,26 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
+import java.util.logging.Logger;
 
 @Api(value = "/users", description = "Endpoint to Text Service")
 @Path("users")
 public class UserService {
 
+    //creamos variables logger para ir comentando el service del user
+    final static Logger logger = Logger.getLogger(UserService.class.getName());
+
+    //instancia privada para hacer el gservice
     private GameManager gservice;
 
-    public UserService() {
+    public UserService() throws Exception {
         this.gservice = GameManagerImpl.getInstance();
         if (gservice.numUsers() == 0) {
-            this.gservice.addUser("3", "Tatiana", "hola");
-            this.gservice.addUser("8", "Gabriel", "buenas");
-            this.gservice.addUser("1", "Kevin", "bye");
-            this.gservice.addUser("12", "Oscar", "hello");
-            this.gservice.addUser("56", "Miquel", "adios");
+            this.gservice.addUser("Tatiana", "hola");
+            this.gservice.addUser("Gabriel", "buenas");
+            this.gservice.addUser("Kevin", "bye");
+            this.gservice.addUser("Oscar", "hello");
+            this.gservice.addUser("Miquel", "adios");
         }
     }
 
@@ -51,49 +56,38 @@ public class UserService {
     //hacemos el post de un user /añadimos un usuario al servicio
     //y le damos una respuesta correcta al haberlo añadido
     @POST
-    @ApiOperation(value = "añadir un usuario", notes = "x")
+    @ApiOperation(value = "registrar un usuario", notes = "x")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successful")
+            @ApiResponse(code = 201, message = "Successful", responseContainer = "List"),
+            @ApiResponse(code = 500, message="Existant user", responseContainer = "List")
     })
 
-    @Path("/addUser")
+    @Path("/registerUser")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addUser(User user) {
-        String id = user.getId();
-        String username = user.getUsername();
-        String password = user.getPassword();
-        this.gservice.addUser(id, username, password);
-
-        return Response.status(201).build();
+        try {
+            this.gservice.addUser(user.getUsername(), user.getPassword());
+            return Response.status(201).build();
+        }
+        catch (ExistantUserException e){
+            return Response.status(500).build();
+        }
     }
 
     //este servicio lo utilizaremos para encontar un usuario según su id
     @GET
-    @ApiOperation(value = "obtener usuario según su id", notes = "x")
+    @ApiOperation(value = "obtener usuario según su username", notes = "x")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successful", response = User.class),
             @ApiResponse(code = 404, message = "UserNotFoundException")
     })
-    @Path("/getUser/{idUser}")
+    @Path("/getUser/{username}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response getUser(@PathParam("idUser") String id) throws UserNotFoundException {
-        /*User user = null;
-        try {
-            user = this.gservice.getUser(id);
-            GenericEntity<User> entity = new GenericEntity<User>(user) {
-            };
-            return Response.status(201).entity(entity).build();
-
-        } catch (UserNotFoundException e) {
-            e.printStackTrace();
-            return Response.status(404).build();
-        }*/
-
+    public Response getUser(@PathParam("username") String username) throws UserNotFoundException {
         //versión alternativa que de momento funciona
-        User user=this.gservice.getUser(id);
+        User user=this.gservice.getUser(username);
         if(user==null) return Response.status(404).build();
         else return Response.status(201).entity(user).build();
-
     }
 
     //añadir un eliminar usuario
@@ -104,12 +98,12 @@ public class UserService {
             @ApiResponse(code = 404, message = "UserNotFoundException")
     })
 
-    @Path("/deleteUser/{idUser}")
+    @Path("/deleteUser/{username}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response deleteUser(@PathParam("idUser") String id) throws UserNotFoundException {
-        User user = this.gservice.getUser(id);
+    public Response deleteUser(@PathParam("username") String username) throws UserNotFoundException {
+        User user = this.gservice.getUser(username);
         if(user == null) return Response.status(404).build();
-        else this.gservice.deleteUserAdmin(id);
+        else this.gservice.deleteUserAdmin(username);
         return Response.status(201).build();
     }
 

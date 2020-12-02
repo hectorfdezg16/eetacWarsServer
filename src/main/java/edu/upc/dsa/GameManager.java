@@ -10,22 +10,17 @@ public interface GameManager {
     //iremos añadiendo funciones en el contrato según vayamos viendo el juego
     //y las prestaciones que se necesita para el usuario
 
-    //añadimos el login
-    public User logIn(String username, String password) throws UserNotFoundException, UserAlreadyConectedException;
-
     //mirar id de un usuario
     public int getIdUser(String username, String password) throws UserNotFoundException;
 
     //creamos la función de añadir un usuario
-    public void addUser(String id, String username, String password);
+    //public void addUser(String id, String username, String password);
     //añadir un item al juego / como admin / no como user
     public Item addItem(Item item);
-    public Item addItem(String id, String name);
+    public Item addItem(String name, String total);
 
-    //obtener un usuario
-    public User getUser(String id) throws UserNotFoundException;
     //obtener un item
-    public Item getItem(String id) throws ItemNotFoundException;
+    public Item getItem(String name) throws ItemNotFoundException;
     //tenemos que implementar también la función devuélveme todos los usuarios
     public HashMap<String,User> findAll();
     public ArrayList<Item> findAllItems();
@@ -34,10 +29,15 @@ public interface GameManager {
     //osea solo un admin o él mismo
     public void deleteUser(String id, String password) throws UserNotFoundException;
     public void deleteUserAdmin(String id) throws UserNotFoundException;
-    public void deleteItem(String id) throws  ItemNotFoundException;
+    public void deleteItem(String name) throws  ItemNotFoundException;
     //modificar parametros de un usuario
     public User updateUser(User u) throws UserNotFoundException;
     public Item updateItem(Item i) throws ItemNotFoundException;
+
+    //añadimos dos funcines más a ver si login funciona
+    public User addUser(String username, String password) throws ExistantUserException;
+    public User getUserLogin(String username, String password) throws UserNotFoundException, PasswordNotMatchException;
+    public User getUser(String username) throws UserNotFoundException;
 
     //numeros de usuario en el sistema
     public int numUsers();

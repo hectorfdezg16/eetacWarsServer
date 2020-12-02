@@ -1,5 +1,7 @@
 package edu.upc.dsa.models;
 
+import java.util.List;
+
 public class Item {
 
     //atributos del modelo Item
@@ -14,23 +16,20 @@ public class Item {
     //id del jugador que tiene estos items
     String idPlayer;
 
+    //obtener la lista de usuarios que tienen un ítem en concreto
+    List<User> itemsByUser;
+
+    //constructor vacio para el json
+    public Item(String id) {
+    }
+
     //constructor vacio, con parametros, getters y setters
     public Item() {
     }
 
-    public Item(String id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    //constructor basico
-    //de momento tenemos dudas de poner en el basico nivel o no
-    //lo veremos más adelante
-    public Item(String id, String name, String total, String idPlayer) {
-        this.id = id;
+    public Item(String name, String total) {
         this.name = name;
         this.total = total;
-        this.idPlayer = idPlayer;
     }
 
     public String getId() {
@@ -87,5 +86,13 @@ public class Item {
 
     public void setIdPlayer(String idPlayer) {
         this.idPlayer = idPlayer;
+    }
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "name='" + name + '\'' +
+                ", total='" + total + '\'' +
+                '}';
     }
 }

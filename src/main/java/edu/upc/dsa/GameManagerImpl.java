@@ -39,18 +39,18 @@ public class GameManagerImpl implements GameManager {
     private GameManagerImpl() {
 
         //inicializamos número de items y partidas
-        numPlays = 0;
-        numItems = 0;
-        numUsers = 0;
-        numMaps = 0;
+        this.numPlays = 0;
+        this.numItems = 0;
+        this.numUsers = 0;
+        this.numMaps = 0;
         //inicializamos en el constructor también las diferentes listas
-        playsByPlayer = new ArrayList<>();
-        itemsByPlayer = new ArrayList<>();
-        mapsByPlay = new LinkedList<>();
-        enemiesByMap = new LinkedList<>();
-        alliesByMap = new LinkedList<>();
-        items=new ArrayList<>();
-        users = new HashMap<>();
+        this.playsByPlayer = new ArrayList<>();
+        this.itemsByPlayer = new ArrayList<>();
+        this.mapsByPlay = new LinkedList<>();
+        this.enemiesByMap = new LinkedList<>();
+        this.alliesByMap = new LinkedList<>();
+        this.items=new ArrayList<>();
+        this.users = new HashMap<>();
 
     }
 
@@ -65,66 +65,23 @@ public class GameManagerImpl implements GameManager {
     public void clear() {
         instance=null;
         //linkedlist y arraylist funcionan de la misma manera
-        playsByPlayer.clear();
-        itemsByPlayer.clear();
-        mapsByPlay.clear();
-        enemiesByMap.clear();
-        alliesByMap.clear();
-        items.clear();
-        users.clear();
-    }
-
-    //implementamos el logIn
-    public User logIn(String username, String password) throws UserNotFoundException, UserAlreadyConectedException{
-        //de la función getIdUser que hemos creado abajo obtenemos el idenficador
-        //identificador deseado dando username y password
-        int idUser = getIdUser(username, password);
-        //en esta parte también se crea una sesión y una implementación de sesión
-        //instanciamos primeras variables
-        User user = null;
-        SessionManager session = null;
-
-        //intentamos abrir sesión
-        try{
-            //no funcionará ya que la función get no está bien implementada
-            session = FactorySessionManager.openSession();
-            user = (User)session.get(User.class, idUser);
-        }
-        catch (Exception e){
-            logger.error("Error al intentar abrir la sesión: " +e.getMessage());
-        }
-        finally {
-            session.close();
-        }
-
-        return user;
+        this.playsByPlayer.clear();
+        this.itemsByPlayer.clear();
+        this.mapsByPlay.clear();
+        this.enemiesByMap.clear();
+        this.alliesByMap.clear();
+        this.items.clear();
+        this.users.clear();
     }
 
     //mirar id de un usuario pasando su nombre de usuario y su contraseña
     public int getIdUser(String username, String password) throws UserNotFoundException{
-        //crear una sesión
-        SessionManager session = null;
-
+        User user= null;
         int idUser;
 
-        try{
-            //porque hacemos una factoria???
-            //motivo== porque tendremos que abrir muchas sesiones para el usuario
-            //conectarse, desconectarse
-
-            //inicamos una sesión
-            session = FactorySessionManager.openSession();
-
-            idUser = session.getId(User.class, username, password);
-        }
-        catch(Exception e){
-            logger.error("Este usuario no existe: " +e.getMessage());
-            throw new UserNotFoundException();
-        }
-        finally{
-            session.close();
-        }
-
+        if(!username.equals(user.getUsername()) && !password.equals(user.getPassword())) throw new UserNotFoundException();
+        idUser= Integer.parseInt(user.getId());
+        logger.info("Id del usuario "+username+ " es: "+idUser);
         return idUser;
     }
 
@@ -132,11 +89,29 @@ public class GameManagerImpl implements GameManager {
     //funcion que implementa el contrato UserManager
     //función añadir usuario
     //Add a new User
-    public void addUser(String id, String username, String password){
+    public User addUser(String username, String password) throws ExistantUserException{
         //por si hubiese mismo id cosa poco probable
-        if(!this.users.containsKey(id)){
-            this.users.put(id, new User(id, username, password));
-        }
+        User user = this.users.get(username);
+        if(user!=null) throw new ExistantUserException();
+        user = new User(username,password);
+        this.users.put(username, user);
+        logger.info("Nuevo usuario en el sistema: "+user.toString());
+        return user;
+    }
+
+    public User getUserLogin(String username, String password) throws UserNotFoundException, PasswordNotMatchException{
+        User user= this.users.get(username);
+        if(user==null) throw new UserNotFoundException();
+        if(!password.equals(user.getPassword())) throw new PasswordNotMatchException();
+        logger.info("Usuario logeado: "+user.toString());
+        return user;
+    }
+
+    //a continuación a implementar todas las funciones creadas
+    @Override
+    public User getUser(String username) throws UserNotFoundException{
+        User user = this.users.get(username);
+        return user;
     }
 
     @Override
@@ -217,24 +192,17 @@ public class GameManagerImpl implements GameManager {
         return 0;
     }
 
-    //a continuación a implementar todas las funciones creadas
     @Override
-    public User getUser(String id) throws UserNotFoundException{
-        User user = this.users.get(id);
-        return user;
-    }
-
-    @Override
-    public Item getItem(String id) throws ItemNotFoundException{
-        logger.info("getItem("+id+")");
+    public Item getItem(String name) throws ItemNotFoundException{
+        logger.info("getItem("+name+")");
 
         for(Item item: this.items){
-            if(item.getId().equals(id)){
-                logger.info("getTrack("+id+"): " +item);
+            if(item.getName().equals(name)){
+                logger.info("getTrack("+name+"): " +item);
                 return item;
             }
         }
-        logger.warn("not found"+id);
+        logger.warn("not found"+name);
         return null;
     }
 
@@ -252,11 +220,11 @@ public class GameManagerImpl implements GameManager {
 
     //este eliminar usuario solo lo puede hacer el propio usuario o un administrador
     @Override
-    public void deleteUser(String id, String password) throws UserNotFoundException {
+    public void deleteUser(String username, String password) throws UserNotFoundException {
         User user = null;
         //comprobar que la contraseña sea la del id introducido
-        if (this.users.containsKey(id) && user.getPassword().equals(password)) {
-            this.users.remove(id);
+        if (this.users.containsKey(username) && user.getPassword().equals(password)) {
+            this.users.remove(username);
             logger.info("El usuario se ha eliminado correctamente");
         } else {
             logger.info("¡Este usuario no existe!");
@@ -265,20 +233,20 @@ public class GameManagerImpl implements GameManager {
     }
 
     @Override
-    public void deleteUserAdmin(String id) throws UserNotFoundException{
-            User user = this.getUser(id);
+    public void deleteUserAdmin(String username) throws UserNotFoundException{
+            User user = this.getUser(username);
             if(user==null){
                 logger.warn("not found" +user);
             }
             else logger.info(user+"deleted");
 
-            this.users.remove(user.getId());
+            this.users.remove(user.getUsername());
     }
 
     //eliminar item
     @Override
-    public void deleteItem(String id) throws ItemNotFoundException{
-        Item item = this.getItem(id);
+    public void deleteItem(String name) throws ItemNotFoundException{
+        Item item = this.getItem(name);
         if(item==null){
             logger.warn("not found" +item);
         }
@@ -290,12 +258,11 @@ public class GameManagerImpl implements GameManager {
     //falta implementar adduser/ de momento no lo veo
     @Override
     public User updateUser(User u) throws UserNotFoundException {
-        User user = this.getUser(u.getId());
+        User user = this.getUser(u.getUsername());
 
         if(user!=null){
             logger.info(u+" recibido");
 
-            user.setId(u.getId());
             user.setUsername(u.getUsername());
             user.setPassword(u.getPassword());
 
@@ -311,13 +278,13 @@ public class GameManagerImpl implements GameManager {
     //actualizar objeto
     @Override
     public Item updateItem(Item i) throws ItemNotFoundException {
-        Item item = this.getItem(i.getId());
+        Item item = this.getItem(i.getName());
 
         if(item!=null){
             logger.info(i+" recibido");
 
-            item.setId(i.getId());
             item.setName(i.getName());
+            item.setTotal(i.getTotal());
 
             logger.info(item+" actualizado");
         }
@@ -334,8 +301,8 @@ public class GameManagerImpl implements GameManager {
     }
 
     //añadir item al juego
-    public Item addItem(String id, String name){
-        return this.addItem(new Item(id, name));
+    public Item addItem(String name, String total){
+        return this.addItem(new Item(name, total));
     }
 
 

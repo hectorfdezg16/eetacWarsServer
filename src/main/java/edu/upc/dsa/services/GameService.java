@@ -14,7 +14,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.List;
 
 @Api(value = "/game", description = "Endpoint to Text Service")
@@ -27,11 +26,11 @@ public class GameService {
     public GameService() {
         this.gservice = GameManagerImpl.getInstance();
         if (gservice.numItems() == 0) {
-            this.gservice.addItem("1", "poción");
-            this.gservice.addItem("13", "escudo");
-            this.gservice.addItem("6", "espada");
-            this.gservice.addItem("7", "armadura");
-            this.gservice.addItem("4", "casco");
+            this.gservice.addItem("poción","3");
+            this.gservice.addItem("escudo","2");
+            this.gservice.addItem("espada","1");
+            this.gservice.addItem("armadura","2");
+            this.gservice.addItem("casco","3");
         }
     }
 
@@ -51,23 +50,23 @@ public class GameService {
 
     //vamos a obtener un ítem del juego según su id
     @GET
-    @ApiOperation(value = "obtener ítem según su id", notes = "x")
+    @ApiOperation(value = "obtener ítem según su nombre", notes = "x")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successful", response = Item.class, responseContainer = "Item"),
+            @ApiResponse(code = 201, message = "Successful", response = Item.class),
             @ApiResponse(code = 404, message = "ItemNotFoundException")
     })
-    @Path("/getItem/{idItem}")
+    @Path("/getItem/{name}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response getUser(@PathParam("idItem") String id) throws ItemNotFoundException {
+    public Response getItem(@PathParam("name") String name) throws ItemNotFoundException {
         //versión alternativa que de momento funciona
-        Item item=this.gservice.getItem(id);
+        Item item=this.gservice.getItem(name);
         if(item==null) return Response.status(404).build();
         else return Response.status(201).entity(item).build();
     }
 
     //haremos también el additem
     @POST
-    @ApiOperation(value = "añadir un ítem", notes = "x")
+    @ApiOperation(value = "crear un ítem", notes = "x")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successful")
     })
@@ -75,9 +74,9 @@ public class GameService {
     @Path("/addItem")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addItem(Item item) {
-        String id = item.getId();
         String name = item.getName();
-        this.gservice.addItem(id, name);
+        String total = item.getTotal();
+        this.gservice.addItem(name, total);
 
         return Response.status(201).build();
     }
@@ -91,18 +90,18 @@ public class GameService {
             @ApiResponse(code = 404, message = "ItemNotFoundException")
     })
 
-    @Path("/deleteItem/{idItem}")
+    @Path("/deleteItem/{name}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response deleteUser(@PathParam("idItem") String id) throws ItemNotFoundException {
-        Item item = this.gservice.getItem(id);
+    public Response deleteItem(@PathParam("name") String name) throws ItemNotFoundException {
+        Item item = this.gservice.getItem(name);
         if(item == null) return Response.status(404).build();
-        else this.gservice.deleteItem(id);
+        else this.gservice.deleteItem(name);
         return Response.status(201).build();
     }
 
-    //por último hacemos un put de usuario
+    //por último hacemos un put del objeto
     @PUT
-    @ApiOperation(value = "actualizar un objeto", notes = "x")
+    @ApiOperation(value = "actualizar un ítem", notes = "x")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successful"),
             @ApiResponse(code = 404, message = "ItemNotFoundException")

@@ -41,8 +41,8 @@ public class User {
     }
 
     //constructor a parte para añadir usuarios con lo básico
-    public User(String id, String username, String password) {
-        this.id = id;
+    public User(String username, String password) {
+        //this.id = id;
         this.username = username;
         this.password = password;
         this.playsByPlayer = new ArrayList<>();
@@ -124,11 +124,11 @@ public class User {
 
     //a continuación pondremos el tostring por si hace falta mostrarlo por consola
 
+
     @Override
     public String toString() {
         return "User{" +
-                "id='" + id + '\'' +
-                ", username='" + username + '\'' +
+                "username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }
