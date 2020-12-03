@@ -1,0 +1,173 @@
+*{
+margin: 0;
+padding: 0;
+box-sizing: border-box; /*Que estigui tot arrimat als laterals i a dalt*/
+
+
+
+}
+
+img{
+ width: 80px;
+ margin: auto;
+
+
+}
+li{
+float: left;
+list-style: none;
+padding: 0px;
+margin-right:10px;
+margin-top: 20px;
+
+}
+
+
+.nav{
+float: right;
+margin-right: 60px;
+
+}
+.nav ul{
+    list-style: none;
+}
+
+.ul > li >a{
+
+    margin-left: 60px;
+   
+}
+
+a{
+text-decoration: none;
+color: GOLDENROD;
+}
+
+i{
+text-decoration: none;
+color: GOLDENROD;
+}
+button{
+text-decoration: none;
+
+}
+
+.ul li a:hover{
+    color: white;
+    transition: all .3s;
+}
+
+header nav a.activo{
+    color: white;
+}
+/*---------Submenu-------*/
+
+.submenu{
+
+    position: relative;
+    background:  rgba(0,0,0, .50);
+    
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 1.5s;
+    
+}
+.submenu li a{
+
+display: none;
+margin-top: 5px;
+
+
+}
+.ul li:hover .submenu{
+
+visibility: visible;
+opacity: 1;
+}
+
+header{
+background-color: #221f1f;
+background-size: cover;
+padding: 30px 10;
+}
+.logotipo{
+    margin-left: 70px;
+    margin-top: 10px;
+
+
+cursor: pointer;
+}
+
+
+/*----------Titulo-------------------*/
+.titulo{
+    font-size: 40px;
+    color: GOLDENROD;
+    display: inline-block;
+    margin-bottom: 1em;
+    
+    margin: 40px;
+
+
+}
+.descripcion{
+
+    font-weight: normal;
+    font-size: 20px;
+    line-height: 1.75em;
+    max-width: 50%; /*Es la zona que opuca el texto, el 50% es que solo llegue hasta la mitad d el apagina web*/
+    margin-bottom: 1.25em;
+    display: flex;
+    color: white;
+    margin: 40px;
+}
+
+/*-----------Foto Principal-----------------*/
+.foto-inicial{
+
+    min-height: 35em;
+    background: linear-gradient(rgba(0,0,0, .50) 0%, rgba(0,0,0, .50) 100%), url(../img/zelda.jpg);
+    background-size: cover;
+    margin-bottom: 10em;
+
+}
+
+
+
+.foto-inicial .boton{
+
+    background: rgba(0,0,0, .50);
+    border: none;
+    border-radius: 1em;
+    padding: 0.93em 1.87em;
+    color: white;
+    margin-right: 1.25em; /*margen a la derecha */
+    margin-top: 1.25em;
+    margin-left: 2em;
+    cursor: pointer;
+    transition: .3s ease all;
+    font-size: 1.12em;
+    }
+
+.foto-inicial .boton:hover{
+
+    background:white;
+    color: black;
+}
+
+.foto-inicial .boton i{
+
+    margin-right: 1.25em;
+
+}
+
+/*--------Media Queries----------*/
+@media screen and (max-width: 800px){
+header.logotipo{
+
+    margin-bottom: 10px;
+    img-size: 30px;
+}
+
+
+}

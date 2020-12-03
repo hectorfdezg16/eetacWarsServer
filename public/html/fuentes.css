@@ -1,0 +1,26 @@
+@font-face{
+font-family:valorant;
+src:url(fonts/valorant);
+}
+@font-face{
+font-family:ReturnofGanon;
+src:url(fonts/ReturnofGanon);
+}
+@font-face{
+font-family:American Captain;
+src:url(fonts/American Captain);
+}
+@font-face{
+font-family:Wanted;
+src:url(fonts/Wanted);
+}
+a{
+font-family: valorant;
+font-size: 20px;
+}
+p{
+font-family: valorant;
+}
+h3{
+font-family: American Captain;
+}
